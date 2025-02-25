@@ -14,9 +14,15 @@ load_dotenv()
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ["SECRETKEY"]
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('JAWSDB_URL')
+
+database_url = os.getenv('JAWSDB_URL')
+if not database_url:
+    raise ValueError("JAWSDB_URL is not set in environment variables!")
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url.replace("mysql://", "postgresql://")
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 Bootstrap5(app)
+
 
 # Configure Flask-Login's Login Manager
 login_manager = LoginManager()
@@ -27,7 +33,7 @@ class Base(DeclarativeBase):
     pass
 
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///todo.db"
+# app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///todo.db"
 
 # Create the extension
 db = SQLAlchemy(model_class=Base)
