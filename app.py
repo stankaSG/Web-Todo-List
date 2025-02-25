@@ -10,13 +10,13 @@ import os
 from dotenv import load_dotenv
 from sqlalchemy.engine.url import make_url
 
+
+load_dotenv()
 database_url = os.getenv("JAWSDB_URL")
 
 
-load_dotenv()
-
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.environ["SECRETKEY"]
+app.config['SECRET_KEY'] = os.getenv("SECRETKEY", "default_secret_key")
 
 database_url = os.getenv('JAWSDB_URL')
 if database_url and database_url.startswith("mysql://"):
