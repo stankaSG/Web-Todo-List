@@ -8,6 +8,9 @@ from forms import LoginForm, RegisterForm, ToDoForm
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from dotenv import load_dotenv
+from sqlalchemy.engine.url import make_url
+
+database_url = os.getenv("JAWSDB_URL")
 
 
 load_dotenv()
@@ -16,11 +19,10 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ["SECRETKEY"]
 
 database_url = os.getenv('JAWSDB_URL')
-if not database_url:
-    raise ValueError("JAWSDB_URL is not set in environment variables!")
-app.config['SQLALCHEMY_DATABASE_URI'] = database_url.replace("mysql://", "postgresql://")
+if database_url and database_url.startswith("mysql://"):
+    database_url = database_url.replace("mysql://", "mysql+pymysql://")
 
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config["SQLALCHEMY_DATABASE_URI"] = database_url
 Bootstrap5(app)
 
 
