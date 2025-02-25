@@ -1,0 +1,95 @@
+{% from "bootstrap5/form.html" import render_form %} {% block content %}
+{% include "header.html" %}
+<body>
+    <main>
+   <div class="container">
+        <div class="row">
+
+           {% if not logged_in: %}
+            <div>
+                <video autoplay muted loop id="bg-video">
+                    <source src="static/assets/bg-video.mp4" type="video/mp4">
+                </video>
+            </div>
+                {% else %}
+                <div class="col-md-6 col-lg-6 col-xl-6 left-panel">
+                <h2>To-Do List</h2>
+                    {% if not todo_lists: %}
+                        <p>There are no Todo list</p>
+                    {% elif not todo_list_id: %}
+                        <p>Open Todo list</p>
+
+                    {% else %}
+                    <p>{{todo_list.title}}</p>
+                    <form action="{{ url_for('add_task',todo_list_id=todo_list_id) }}" method="post" class="todo-form mb-3">
+                        <input type="text" name="title" class="form-control todo-input" placeholder="New Task..." required>
+                    </form>
+
+                    <div class="task-list">
+                        {% for task in tasks %}
+                            <div class="task-item">
+                                <span class="task-text {% if task.done %}completed{% endif %}">
+                                    {{ task.title }}
+                                </span>
+                                <div class="task-actions">
+                                    <a href="{{ url_for('done_task',todo_list_id=todo_list_id, task_id=task.id) }}" class="task-btn">✔</a>
+                                    <a href="{{ url_for('delete_task', todo_list_id=todo_list_id, task_id=task.id) }}" class="task-btn">✖</a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                {% endif %}
+            </div>
+
+        {% if logged_in: %}
+            <div class="col-md-6 col-lg-6 col-xl-6 right-panel">
+                <div class="list-container">
+                    <h2>My Lists</h2>
+                        <div class="task-list">
+                       {% if not todo_lists %}
+                            <ul>
+                                <li>You have no Lists</li>
+                            </ul>
+                        {% else %}
+                        {% for list in todo_lists %}
+                            <div class="task-item">
+                                <div class="task-actions">
+                                    <ul>
+                                    <li>
+                                        <a href="{{ url_for('open_list', todo_list_id=list.id) }}" class="task-btn">{{ list.title }}</a>
+                                        <a href="{{ url_for('delete_todo_list', todo_list_id=list.id) }}" class="task-btn">✖</a>
+                                    </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        {% endfor %}
+                       {% endif %}
+                    </div>
+            </div>
+                <form method="post" action="{{ url_for('home') }}">
+                    {{ render_form(list_form, novalidate=True, button_map={"submit": "primary"}) }}
+                </form>
+            </div>
+        </div> <!-- End of single row -->
+       {% endif %}
+    </div> <!-- End of container -->
+
+
+    <script>
+        document.querySelector('.todo-input').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                this.form.submit();
+            }
+        });
+    </script>
+
+   </main>
+
+    {% include "footer.html" %}
+
+</body>
+</html>
+
+{% endblock %}

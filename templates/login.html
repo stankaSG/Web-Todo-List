@@ -1,0 +1,23 @@
+{% from "bootstrap5/form.html" import render_form %} {% block content %}
+{% include "header.html" %}
+<body>
+   <div class="container">
+    <div class="left-panel">
+        <h2>Welcome Back!</h2>
+        {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+         <p class="flash">{{ message }}</p>
+        {% endfor %}
+      {% endif %}
+      {% endwith %}
+         {{ render_form(form, novalidate=True, button_map={"submit": "primary"})}}
+    </div>
+    </div>
+
+    {% include "footer.html" %}
+
+</body>
+</html>
+
+{% endblock %}
