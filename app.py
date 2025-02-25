@@ -10,8 +10,12 @@ import os
 from dotenv import load_dotenv
 
 
+load_dotenv()
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ["SECRETKEY"]
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('JAWSDB_URL')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 Bootstrap5(app)
 
 # Configure Flask-Login's Login Manager
